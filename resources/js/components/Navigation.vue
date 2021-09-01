@@ -9,13 +9,40 @@
         </v-list-item-content>
       </v-list-item>
       <v-divider></v-divider>
-      <v-list-item v-for="uLink of userLinks" :key="uLink.text" link :to="uLink.link">
+      <v-list-item  link to="/account">
         <v-list-item-content>
-          <v-list-item-title class="text-subtitle2">{{
-            uLink.text
-          }}</v-list-item-title>
+          <v-list-item-title class="text-subtitle2">Account</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
+
+        <v-list-group
+          :value="false"
+          no-action
+        >
+          <template v-slot:activator>
+            <v-list-item-content>
+              <v-list-item-title>Settings</v-list-item-title>
+            </v-list-item-content>
+          </template>
+
+          <v-list-item
+            v-for="({title, icon, path}, i) in settings"
+            :key="i"
+            link
+            :to="path"
+            dense
+            class="pl-5"
+          >
+            <v-list-item-title v-text="title"></v-list-item-title>
+
+            <v-list-item-icon>
+              <v-icon v-text="icon"></v-icon>
+            </v-list-item-icon>
+          </v-list-item>
+        </v-list-group>
+
+
+
       <v-divider></v-divider>
       <v-list-item v-for="tLink of ticketLinks" :key="tLink.text" link :to="tLink.link">
         <v-list-item-content>
@@ -39,9 +66,9 @@ export default {
   name: "navigation",
   data() {
     return {
-      userLinks: [
-        { text: "Account", link: "/account" },
-        { text: "Settings", link: "/settings" },
+      settings: [
+        { title: "Departments", path: "/settings/depts", icon: "" },
+        { title: "Users", path: "/settings/users", icon: "" },
       ],
       ticketLinks: [
         { text: "New Ticket", link: "/tickets/new" },

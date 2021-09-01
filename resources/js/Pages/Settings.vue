@@ -1,5 +1,8 @@
 <template>
-<div>Settings</div>
+<div>
+    <div>Settings</div>
+    <router-view />
+</div>
 </template>
 <script>
 export default {
