@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Department;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DepartmentController extends Controller
 {
@@ -14,7 +15,10 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-        return Department::all();
+        return DB::table('departments')
+        ->join('users', 'departments.supervisor_id', 'users.id')
+        ->select('departments.*', 'users.name as supervisor')
+        ->get();
     }
 
     /**
@@ -69,7 +73,7 @@ class DepartmentController extends Controller
      */
     public function update(Request $request, Department $department)
     {
-        return Deprtment::find($department)->update($request->all());
+        return Department::find($department)->update($request->all());
     }
 
     /**

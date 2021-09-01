@@ -8,6 +8,8 @@ import NewTicket from "./Pages/NewTicket.vue";
 import UserTickets from "./Pages/UserTickets.vue";
 import DeptTickets from "./Pages/DeptTickets.vue";
 import Reports from "./Pages/Reports.vue"
+import Departments from "./Pages/Departments.vue";
+import Users from "./Pages/Users.vue";
 
 
 Vue.use(VueRouter);
@@ -23,6 +25,16 @@ const routes = [
     {
         path: "/settings",
         component: Settings,
+        children: [
+            {
+                path: "depts",
+                component: Departments,
+            },
+            {
+                path: "users",
+                component: Users,
+            }
+        ]
     },
     {
         path: "/tickets",
