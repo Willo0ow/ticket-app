@@ -14,5 +14,8 @@ import Navigation from "./components/Navigation.vue";
 export default {
     components: {Navigation},
     name: "App",
+    async created(){
+        await this.$store.dispatch('getUserInfo');
+    }
 }
 </script>

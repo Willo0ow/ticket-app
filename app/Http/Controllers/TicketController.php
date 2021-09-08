@@ -37,10 +37,8 @@ class TicketController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user()->id;
-        $dept = Auth::user()->department_id;
         $ticketData = $request->all();
         $ticketData['user_id'] = $user;
-        $ticketData['dept_id'] = $dept;
         return Ticket::create($ticketData);
     }
 
@@ -87,5 +85,8 @@ class TicketController extends Controller
     public function destroy(Ticket $ticket)
     {
         return Ticket::find($ticket)->delete();
+    }
+    public function deptTickets($dept_id){
+        return Ticket::where('dept_id', $dept_id)->get();
     }
 }
