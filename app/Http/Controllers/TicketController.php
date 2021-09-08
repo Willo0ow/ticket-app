@@ -86,4 +86,7 @@ class TicketController extends Controller
     {
         return Ticket::find($ticket)->delete();
     }
+    public function deptTickets($dept_id){
+        return Ticket::where('dept_id', $dept_id)->get();
+    }
 }

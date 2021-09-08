@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TicketController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,9 +20,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::post('/ticket', [TicketController::class, 'store']);
+Route::get('/authuser', [UserController::class, 'showAuthUser']);
 Auth::routes();
 Route::get('/{any}', function (){
     return view('home');
 })->where('any', '.*')->middleware('auth');
-
-// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

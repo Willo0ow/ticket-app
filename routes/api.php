@@ -22,5 +22,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 Route::get('/users', [UserController::class, 'index']);
 Route::patch('/users/{user}', [UserController::class, 'update']);
+Route::get('/users/{user}', [UserController::class, 'show']);
 Route::post('/department', [DepartmentController::class, 'store']);
 Route::get('/departments', [DepartmentController::class, 'index']);
+Route::get('/depttickets/{dept_id}', [TicketController::class, 'deptTickets']);
