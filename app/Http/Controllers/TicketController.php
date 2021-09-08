@@ -89,4 +89,7 @@ class TicketController extends Controller
     public function deptTickets($dept_id){
         return Ticket::where('dept_id', $dept_id)->get();
     }
+    public function userTickets($user){
+        return Ticket::where('user_id', $user)->get();
+    }
 }

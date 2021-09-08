@@ -26,3 +26,4 @@ Route::get('/users/{user}', [UserController::class, 'show']);
 Route::post('/department', [DepartmentController::class, 'store']);
 Route::get('/departments', [DepartmentController::class, 'index']);
 Route::get('/depttickets/{dept_id}', [TicketController::class, 'deptTickets']);
+Route::get('/usertickets/{user}', [TicketController::class, 'userTickets']);
