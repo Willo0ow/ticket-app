@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Ticket;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TicketController extends Controller
 {
@@ -36,8 +37,10 @@ class TicketController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user()->id;
+        $dept = Auth::user()->department_id;
         $ticketData = $request->all();
         $ticketData['user_id'] = $user;
+        $ticketData['dept_id'] = $dept;
         return Ticket::create($ticketData);
     }
 
