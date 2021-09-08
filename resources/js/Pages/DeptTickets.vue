@@ -1,31 +1,31 @@
 <template>
     <v-container>
         <v-card-title>Department Tickets</v-card-title>
-        <v-list v-if="tickets.length">
-            <v-list-item v-for="ticket of tickets" :key="ticket.id">
-                <v-card width="100%" class="my-3">
-                    <v-card-title>{{ticket.title}}</v-card-title>
-                    <v-card-text>{{ticket.content}}</v-card-text>
-                    <v-card-actions>
-                        <v-btn small class="ml-auto">Assign</v-btn>
-                    </v-card-actions>
-                </v-card>
-            </v-list-item>
-        </v-list>
+        <ticket-list :tickets="tickets" :actionOne="viewTicket" actionOneTitle="View"></ticket-list>
+        <v-dialog v-model="isEditVisible">
+            <ticket-edit :ticket="selectedTicket"></ticket-edit>
+        </v-dialog>
     </v-container>
 </template>
 <script>
 import { mapState, mapActions } from "vuex";
+import TicketEdit from '../components/TicketEdit.vue';
+import TicketList from "../components/TicketList.vue";
+
 export default {
+    components: { TicketList, TicketEdit },
     name: "DeptTickets",
     data() {
         return {
-            tickets: []
+            tickets: [],
+            isEditVisible: false,
+            selectedTicket: {},
         };
     },
     computed: {
         ...mapState({
-            userDept: state => state.authUser? state.authUser.department_id : null
+            userDept: state =>
+                state.authUser ? state.authUser.department_id : null
         })
     },
     methods: {
@@ -38,6 +38,10 @@ export default {
                 `/api/depttickets/${this.userDept}`
             );
             this.tickets = data;
+        },
+        viewTicket(id){
+            this.selectedTicket = this.tickets.find((ticket)=>ticket.id === id)
+            this.isEditVisible = true
         }
     },
     async beforeMount() {
