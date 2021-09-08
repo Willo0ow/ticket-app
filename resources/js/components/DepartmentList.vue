@@ -11,17 +11,17 @@
   </v-list>
 </template>
 <script>
+import getDepts from "../mixins/getDepts";
+
 export default {
+mixins: [getDepts],
   data() {
     return {
       depts: [],
     };
   },
   methods: {
-    async getDepts() {
-      const { data } = await axios.get("/api/departments");
-      this.depts = data;
-    },
+
   },
   async mounted() {
     await this.getDepts();
