@@ -2,6 +2,7 @@
     <v-sheet>
             <v-card-title>Add New Ticket</v-card-title>
             <v-card-text>
+                <v-select label="Department" v-model="dept_id" :items="depts" item-value="id" item-text="name"></v-select>
                 <v-text-field v-model="title" label="Title"></v-text-field>
                 <v-textarea v-model="content" label="Content"></v-textarea>
                 <div class="d-flex justify-space-between">
@@ -55,10 +56,14 @@
     </v-sheet>
 </template>
 <script>
+import getDepts from "../mixins/getDepts";
+
 export default {
+    mixins: [getDepts],
     name: "NewTicket",
     data() {
         return {
+            dept_id: null,
             title: "",
             content: "",
             deadline: new Date().toISOString().slice(0, 10),
@@ -69,7 +74,8 @@ export default {
                 { text: "High", value: 3 },
                 { text: "Super High", value: 4 }
             ],
-            menu: false
+            menu: false,
+            depts: [],
         };
     },
     methods: {
@@ -78,16 +84,24 @@ export default {
                 title: this.title,
                 content: this.content,
                 deadline: this.deadline,
-                priority: this.priority
+                priority: this.priority,
+                dept_id: this.dept_id,
             };
             await axios.post("/ticket", form);
+            setTimeout(()=>{
+                this.cancel()
+            }, 2000)
         },
         cancel() {
+            this.dept_id = null;
             this.title = "";
             this.content = "";
             this.deadline = new Date().toISOString().slice(0, 10);
             this.priority = 1;
         }
+    },
+    async created(){
+        await this.getDepts()
     }
 };
 </script>
