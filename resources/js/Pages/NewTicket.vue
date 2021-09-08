@@ -10,7 +10,7 @@
                     ref="menu"
                     v-model="menu"
                     :close-on-content-click="false"
-                    :return-value.sync="date"
+                    :return-value.sync="deadline"
                     transition="scale-transition"
                     offset-y
                     min-width="auto"
