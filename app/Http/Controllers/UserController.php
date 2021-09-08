@@ -10,4 +10,7 @@ class UserController extends Controller
     public function index(){
         return User::all();
     }
+    public function update(Request $request, $user){
+        return User::where('id',$user)->update($request->all());
+    }
 }
