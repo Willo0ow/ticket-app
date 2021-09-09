@@ -7,6 +7,7 @@
             {{ticket.content}}
         </v-card-text>
         <v-card-actions>
+            <slot name="actions"></slot>
             <v-btn>Test</v-btn>
         </v-card-actions>
     </v-card>
