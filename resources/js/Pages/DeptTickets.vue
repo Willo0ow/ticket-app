@@ -22,6 +22,7 @@
                         single-line
                         item-value="id"
                         v-model="assignedUser"
+                        @change="assignUserToTicket($event)"
                     ></v-select>
                 </template>
             </ticket-edit>
@@ -71,6 +72,9 @@ export default {
         viewTicket(id) {
             this.selectedTicket = this.tickets.find(ticket => ticket.id === id);
             this.isEditVisible = true;
+        },
+        async assignUserToTicket(assignedUser){
+            await axios.patch(`/api/ticketupdate/${this.selectedTicket.id}`, {assignees: JSON.stringify([assignedUser])});
         }
     },
     async beforeMount() {
