@@ -10,8 +10,8 @@
             <ticket-edit :ticket="selectedTicket">
                 <template v-slot:actions v-if="deptUsers.length">
                     <v-select
-                    class="ml-auto"
-                    style="max-width:200px"
+                        class="ml-auto"
+                        style="max-width:200px"
                         :items="deptUsers"
                         item-text="name"
                         persistent-hint
@@ -24,6 +24,20 @@
                         v-model="assignedUser"
                         @change="assignUserToTicket($event)"
                     ></v-select>
+                    <v-select
+                        style="max-width:200px"
+                        :items="depts"
+                        item-text="name"
+                        persistent-hint
+                        filled
+                        rounded
+                        dense
+                        hint="Change ticket's department"
+                        single-line
+                        item-value="id"
+                        @change="changeTicketDept($event)"
+                        :value="selectedTicket.dept_id"
+                    ></v-select>
                 </template>
             </ticket-edit>
         </v-dialog>
@@ -33,9 +47,11 @@
 import { mapState, mapActions } from "vuex";
 import TicketEdit from "../components/TicketEdit.vue";
 import TicketList from "../components/TicketList.vue";
+import getDepts from "../mixins/getDepts";
 
 export default {
     components: { TicketList, TicketEdit },
+    mixins: [getDepts],
     name: "DeptTickets",
     data() {
         return {
@@ -43,7 +59,8 @@ export default {
             isEditVisible: false,
             selectedTicket: {},
             deptUsers: [],
-            assignedUser: null
+            assignedUser: null,
+            depts: []
         };
     },
     computed: {
@@ -73,13 +90,24 @@ export default {
             this.selectedTicket = this.tickets.find(ticket => ticket.id === id);
             this.isEditVisible = true;
         },
-        async assignUserToTicket(assignedUser){
-            await axios.patch(`/api/ticketupdate/${this.selectedTicket.id}`, {assignees: JSON.stringify([assignedUser])});
+        async assignUserToTicket(assignedUser) {
+            await axios.patch(`/api/ticketupdate/${this.selectedTicket.id}`, {
+                assignees: JSON.stringify([assignedUser])
+            });
+        },
+        async changeTicketDept(dept_id) {
+            await axios.patch(`/api/ticketupdate/${this.selectedTicket.id}`, {
+                dept_id
+            });
+            setTimeout(async ()=>{
+                await this.getDeptTickets();
+            }, 2000);
         }
     },
     async beforeMount() {
         await this.getDeptTickets();
         await this.getDeptUsers();
+        await this.getDepts();
     }
 };
 </script>
