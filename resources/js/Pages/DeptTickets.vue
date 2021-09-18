@@ -16,6 +16,7 @@
             :ticketPriority="selectedTicket.priority"
             :ticketDeadline="selectedTicket.deadline"
             :getTicket="viewTicket"
+            :ticketAssignees="selectedTicket.assignees"
           ></supervisor-actions>
           <user-actions
             :userDept="userDept"
@@ -67,6 +68,8 @@ export default {
     },
     async viewTicket(id) {
       const {data} = await axios.get(`/api/ticket/${id}`)
+      data.assignees = await JSON.parse(data.assignees)
+      data.assignees = data.assignees?  data.assignees: [];
       this.selectedTicket = data;
       this.isEditVisible = true;
     },

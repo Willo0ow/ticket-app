@@ -19,7 +19,7 @@ class CreateAssignmentRequestsTable extends Migration
             $table->integer('request_user_id');
             $table->integer('dept_id');
             $table->string('message')->nullable();
-            $table->boolean('is_accepted')->nullable();
+            $table->integer('status')->default(0);
             $table->timestamps();
         });
     }

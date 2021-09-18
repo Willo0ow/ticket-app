@@ -21,7 +21,7 @@ class CreateTicketsTable extends Migration
             $table->integer('user_id');
             $table->date('deadline')->nullable();
             $table->integer('priority');
-            $table->json('assignees')->nullable();
+            $table->json('assignees')->default("[]");
             $table->timestamps();
             $table->index(['dept_id', 'user_id']);
         });

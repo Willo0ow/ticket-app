@@ -12,8 +12,9 @@
       hint="Assigned user"
       single-line
       item-value="id"
-      v-model="assignedUser"
-      @change="assignUserToTicket($event)"
+      :value="ticketAssignees"
+      multiple
+      @input="assignUserToTicket($event)"
     ></v-select>
     <v-select
       style="max-width: 200px"
@@ -99,6 +100,10 @@ export default {
       type: String,
       required: true,
     },
+    ticketAssignees: {
+      type: Array,
+      required: true,
+    },
     getTicket: {
       type: Function,
       required: true,
@@ -109,7 +114,6 @@ export default {
     return {
       menu: false,
       depts: [],
-      assignedUser: null,
       date: null,
     };
   },
@@ -119,9 +123,10 @@ export default {
     },
   },
   methods: {
-    async assignUserToTicket(assignedUser) {
+    async assignUserToTicket(assignees) {
+      console.log(assignees, 'assign');
       await axios.patch(`/api/ticketupdate/${this.ticketId}`, {
-        assignees: JSON.stringify([assignedUser]),
+        assignees: JSON.stringify(assignees),
       });
     },
     async changeTicketDept(dept_id) {
@@ -129,7 +134,7 @@ export default {
         dept_id,
       });
       setTimeout(async () => {
-         await this.getTicket(this.ticketId);
+        await this.getTicket(this.ticketId);
       }, 2000);
     },
     async updateTicketsPriority(priority) {
@@ -137,7 +142,7 @@ export default {
         priority,
       });
       setTimeout(async () => {
-         await this.getTicket(this.ticketId);
+        await this.getTicket(this.ticketId);
       }, 2000);
     },
     async updateDeadline(date) {
