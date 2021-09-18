@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTicketsTable extends Migration
+class CreateAssignmentRequestsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,14 @@ class CreateTicketsTable extends Migration
      */
     public function up()
     {
-        Schema::create('tickets', function (Blueprint $table) {
+        Schema::create('assignment_requests', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('content');
+            $table->integer('ticket_id');
+            $table->integer('request_user_id');
             $table->integer('dept_id');
-            $table->integer('user_id');
-            $table->date('deadline')->nullable();
-            $table->integer('priority');
-            $table->json('assignees')->default("[]");
+            $table->string('message')->nullable();
+            $table->integer('status')->default(0);
             $table->timestamps();
-            $table->index(['dept_id', 'user_id']);
         });
     }
 
@@ -34,6 +31,6 @@ class CreateTicketsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tickets');
+        Schema::dropIfExists('assignment_requests');
     }
 }

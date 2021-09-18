@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\AssignmentRequestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,3 +27,9 @@ Route::get('/users/{user}', [UserController::class, 'show']);
 Route::post('/department', [DepartmentController::class, 'store']);
 Route::get('/departments', [DepartmentController::class, 'index']);
 Route::get('/depttickets/{dept_id}', [TicketController::class, 'deptTickets']);
+Route::get('/departmentusers/{dept_id}', [UserController::class, 'departmentUsers']);
+Route::patch('/ticketupdate/{ticket_id}', [TicketController::class, 'update']);
+Route::post('/assignmentrequest', [AssignmentRequestController::class, 'store']);
+Route::get('/ticket/{id}', [TicketController::class, 'show']);
+Route::get('/deptassignmentrequest/{id}', [AssignmentRequestController::class, 'getDeptRequests']);
+Route::patch('/assignmentrequest/{id}', [AssignmentRequestController::class, 'update']);

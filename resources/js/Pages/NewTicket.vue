@@ -57,9 +57,10 @@
 </template>
 <script>
 import getDepts from "../mixins/getDepts";
+import priorities from "../mixins/priorities";
 
 export default {
-    mixins: [getDepts],
+    mixins: [getDepts, priorities],
     name: "NewTicket",
     data() {
         return {
@@ -68,12 +69,6 @@ export default {
             content: "",
             deadline: new Date().toISOString().slice(0, 10),
             priority: 1,
-            priorities: [
-                { text: "Low", value: 1 },
-                { text: "Medium", value: 2 },
-                { text: "High", value: 3 },
-                { text: "Super High", value: 4 }
-            ],
             menu: false,
             depts: [],
         };

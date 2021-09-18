@@ -1,47 +1,86 @@
 <template>
-    <v-container>
-        <v-card-title>Department Tickets</v-card-title>
-        <v-list v-if="tickets.length">
-            <v-list-item v-for="ticket of tickets" :key="ticket.id">
-                <v-card width="100%" class="my-3">
-                    <v-card-title>{{ticket.title}}</v-card-title>
-                    <v-card-text>{{ticket.content}}</v-card-text>
-                    <v-card-actions>
-                        <v-btn small class="ml-auto">Assign</v-btn>
-                    </v-card-actions>
-                </v-card>
-            </v-list-item>
-        </v-list>
-    </v-container>
+  <v-container>
+    <v-card-title>Department Tickets</v-card-title>
+    <ticket-list
+      :tickets="tickets"
+      :actionOne="viewTicket"
+      actionOneTitle="View"
+    ></ticket-list>
+    <v-dialog v-model="isEditVisible">
+      <ticket-edit :ticket="selectedTicket" :closeFunction="closeEditTicket">
+        <template v-slot:actions v-if="deptUsers.length">
+          <supervisor-actions
+            :deptUsers="deptUsers"
+            :ticketDept="selectedTicket.dept_id"
+            :ticketId="selectedTicket.id"
+            :ticketPriority="selectedTicket.priority"
+            :ticketDeadline="selectedTicket.deadline"
+            :getTicket="viewTicket"
+            :ticketAssignees="selectedTicket.assignees"
+          ></supervisor-actions>
+          <user-actions
+            :userDept="userDept"
+            :ticketId="selectedTicket.id"
+            :authUserId="authUser"
+          ></user-actions>
+        </template>
+      </ticket-edit>
+    </v-dialog>
+  </v-container>
 </template>
 <script>
 import { mapState, mapActions } from "vuex";
+import TicketEdit from "../components/TicketEdit.vue";
+import TicketList from "../components/TicketList.vue";
+import SupervisorActions from "../components/SupervisorActions.vue";
+import UserActions from "../components/UserActions.vue";
+
 export default {
-    name: "DeptTickets",
-    data() {
-        return {
-            tickets: []
-        };
+  components: { TicketList, TicketEdit, SupervisorActions, UserActions },
+  name: "DeptTickets",
+  data() {
+    return {
+      tickets: [],
+      isEditVisible: false,
+      selectedTicket: {},
+      deptUsers: [],
+    };
+  },
+  computed: {
+    ...mapState({
+      userDept: (state) =>
+        state.authUser ? state.authUser.department_id : null,
+      authUser: (state) => (state.authUser ? state.authUser.id : null),
+    }),
+  },
+  methods: {
+    ...mapActions(["getUserInfo"]),
+    async getDeptTickets() {
+      if (!this.userDept) {
+        await this.getUserInfo();
+      }
+      const { data } = await axios.get(`/api/depttickets/${this.userDept}`);
+      this.tickets = data;
     },
-    computed: {
-        ...mapState({
-            userDept: state => state.authUser? state.authUser.department_id : null
-        })
+    async getDeptUsers() {
+      const { data } = await axios.get(`/api/departmentusers/${this.userDept}`);
+      this.deptUsers = data;
     },
-    methods: {
-        ...mapActions(["getUserInfo"]),
-        async getDeptTickets() {
-            if (!this.userDept) {
-                await this.getUserInfo();
-            }
-            const { data } = await axios.get(
-                `/api/depttickets/${this.userDept}`
-            );
-            this.tickets = data;
-        }
+    async viewTicket(id) {
+      const {data} = await axios.get(`/api/ticket/${id}`)
+      data.assignees = await JSON.parse(data.assignees)
+      data.assignees = data.assignees?  data.assignees: [];
+      this.selectedTicket = data;
+      this.isEditVisible = true;
     },
-    async beforeMount() {
-        await this.getDeptTickets();
-    }
+    async closeEditTicket() {
+      this.isEditVisible = false;
+      await this.getDeptTickets();
+    },
+  },
+  async beforeMount() {
+    await this.getDeptTickets();
+    await this.getDeptUsers();
+  },
 };
 </script>

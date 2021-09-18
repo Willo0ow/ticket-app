@@ -48,9 +48,9 @@ class TicketController extends Controller
      * @param  \App\Models\Ticket  $ticket
      * @return \Illuminate\Http\Response
      */
-    public function show(Ticket $ticket)
+    public function show($id)
     {
-        return Ticket::find($ticket);
+        return Ticket::where('id', $id)->first();
     }
 
     /**
@@ -71,9 +71,9 @@ class TicketController extends Controller
      * @param  \App\Models\Ticket  $ticket
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Ticket $ticket)
+    public function update(Request $request, $ticket_id)
     {
-        return Ticket::find($ticket)->update($request->all());
+        return Ticket::where('id', $ticket_id)->update($request->all());
     }
 
     /**
