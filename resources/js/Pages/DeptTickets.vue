@@ -13,6 +13,9 @@
             :deptUsers="deptUsers"
             :ticketDept="selectedTicket.dept_id"
             :ticketId="selectedTicket.id"
+            :ticketPriority="selectedTicket.priority"
+            :ticketDeadline="selectedTicket.deadline"
+            :getTickets="getDeptTickets"
           ></supervisor-actions>
           <user-actions
             :userDept="userDept"
@@ -62,8 +65,9 @@ export default {
       const { data } = await axios.get(`/api/departmentusers/${this.userDept}`);
       this.deptUsers = data;
     },
-    viewTicket(id) {
-      this.selectedTicket = this.tickets.find((ticket) => ticket.id === id);
+    async viewTicket(id) {
+      const {data} = await axios.get(`/api/ticket/${id}`)
+      this.selectedTicket = data;
       this.isEditVisible = true;
     },
     closeEditTicket() {

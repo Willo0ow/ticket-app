@@ -29,31 +29,95 @@
       @change="changeTicketDept($event)"
       :value="ticketDept"
     ></v-select>
+    <v-select
+      :items="priorities"
+      item-text="text"
+      item-value="value"
+      :value="ticketPriority"
+      @change="updateTicketsPriority($event)"
+      persistent-hint
+      filled
+      rounded
+      dense
+      hint="Change ticket's Priority"
+      single-line
+      style="max-width: 200px"
+    ></v-select>
+    <v-menu
+      ref="menu"
+      v-model="menu"
+      :close-on-content-click="false"
+      :return-value.sync="ticketDeadline"
+      transition="scale-transition"
+      offset-y
+      min-width="auto"
+    >
+      <template v-slot:activator="{ on, attrs }">
+        <v-text-field
+          single-line
+          style="max-width: 200px"
+          persistent-hint
+          filled
+          rounded
+          dense
+          :value="updatedDate"
+          hint="Deadline"
+          readonly
+          v-bind="attrs"
+          v-on="on"
+        ></v-text-field>
+      </template>
+      <v-date-picker v-model="date" no-title scrollable>
+        <v-spacer></v-spacer>
+        <v-btn text color="primary" @click="menu = false"> Cancel </v-btn>
+        <v-btn text color="primary" @click="updateDeadline(date)"> OK </v-btn>
+      </v-date-picker>
+    </v-menu>
   </div>
 </template>
 <script>
 import getDepts from "../mixins/getDepts";
+import priorities from "../mixins/priorities";
 export default {
-    props: {
-        deptUsers: {
-            type: Array,
-            required: true
-        },
-        ticketDept: {
-            type: Number,
-            required: true,
-        },
-        ticketId: {
-            type: Number,
-            required: true,
-        }
+  props: {
+    deptUsers: {
+      type: Array,
+      required: true,
     },
-  mixins: [getDepts],
+    ticketDept: {
+      type: Number,
+      required: true,
+    },
+    ticketId: {
+      type: Number,
+      required: true,
+    },
+    ticketPriority: {
+      type: Number,
+      required: true,
+    },
+    ticketDeadline: {
+      type: String,
+      required: true,
+    },
+    getTickets: {
+      type: Function,
+      required: true, 
+    },
+  },
+  mixins: [getDepts, priorities],
   data() {
     return {
+      menu: false,
       depts: [],
       assignedUser: null,
+      date: null,
     };
+  },
+  computed: {
+    updatedDate(){
+      return this.date || this.ticketDeadline
+    },
   },
   methods: {
     async assignUserToTicket(assignedUser) {
@@ -69,9 +133,24 @@ export default {
         await this.getDeptTickets();
       }, 2000);
     },
+    async updateTicketsPriority(priority) {
+      await axios.patch(`/api/ticketupdate/${this.ticketId}`, {
+        priority,
+      });
+      setTimeout(async () => {
+        await this.getDeptTickets();
+      }, 2000);
+    },
+    async updateDeadline(date) {
+      await axios.patch(`/api/ticketupdate/${this.ticketId}`, {
+        deadline: date,
+      });
+      this.$refs.menu.save(date);
+      await this.getTickets();
+    },
   },
-  async beforeMount(){
-      await this.getDepts()
-  }
+  async beforeMount() {
+    await this.getDepts();
+  },
 };
 </script>

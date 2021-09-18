@@ -30,3 +30,4 @@ Route::get('/depttickets/{dept_id}', [TicketController::class, 'deptTickets']);
 Route::get('/departmentusers/{dept_id}', [UserController::class, 'departmentUsers']);
 Route::patch('/ticketupdate/{ticket_id}', [TicketController::class, 'update']);
 Route::post('/assignmentrequest', [AssignmentRequestController::class, 'store']);
+Route::get('/ticket/{id}', [TicketController::class, 'show']);
