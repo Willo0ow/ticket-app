@@ -47,7 +47,6 @@
       ref="menu"
       v-model="menu"
       :close-on-content-click="false"
-      :return-value.sync="ticketDeadline"
       transition="scale-transition"
       offset-y
       min-width="auto"
@@ -100,9 +99,9 @@ export default {
       type: String,
       required: true,
     },
-    getTickets: {
+    getTicket: {
       type: Function,
-      required: true, 
+      required: true,
     },
   },
   mixins: [getDepts, priorities],
@@ -115,8 +114,8 @@ export default {
     };
   },
   computed: {
-    updatedDate(){
-      return this.date || this.ticketDeadline
+    updatedDate() {
+      return this.date || this.ticketDeadline;
     },
   },
   methods: {
@@ -130,7 +129,7 @@ export default {
         dept_id,
       });
       setTimeout(async () => {
-        await this.getDeptTickets();
+         await this.getTicket(this.ticketId);
       }, 2000);
     },
     async updateTicketsPriority(priority) {
@@ -138,15 +137,16 @@ export default {
         priority,
       });
       setTimeout(async () => {
-        await this.getDeptTickets();
+         await this.getTicket(this.ticketId);
       }, 2000);
     },
     async updateDeadline(date) {
       await axios.patch(`/api/ticketupdate/${this.ticketId}`, {
         deadline: date,
       });
-      this.$refs.menu.save(date);
-      await this.getTickets();
+      this.menu = false;
+      await this.getTicket(this.ticketId);
+      this.date = null;
     },
   },
   async beforeMount() {

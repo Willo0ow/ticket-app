@@ -15,7 +15,7 @@
             :ticketId="selectedTicket.id"
             :ticketPriority="selectedTicket.priority"
             :ticketDeadline="selectedTicket.deadline"
-            :getTickets="getDeptTickets"
+            :getTicket="viewTicket"
           ></supervisor-actions>
           <user-actions
             :userDept="userDept"
@@ -70,8 +70,9 @@ export default {
       this.selectedTicket = data;
       this.isEditVisible = true;
     },
-    closeEditTicket() {
+    async closeEditTicket() {
       this.isEditVisible = false;
+      await this.getDeptTickets();
     },
   },
   async beforeMount() {
