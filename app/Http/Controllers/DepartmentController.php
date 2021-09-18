@@ -16,7 +16,7 @@ class DepartmentController extends Controller
     public function index()
     {
         return DB::table('departments')
-        ->join('users', 'departments.supervisor_id', 'users.id')
+        ->leftJoin('users', 'departments.supervisor_id', 'users.id')
         ->select('departments.*', 'users.name as supervisor')
         ->get();
     }
