@@ -1,113 +1,68 @@
 <template>
-    <v-container>
-        <v-card-title>Department Tickets</v-card-title>
-        <ticket-list
-            :tickets="tickets"
-            :actionOne="viewTicket"
-            actionOneTitle="View"
-        ></ticket-list>
-        <v-dialog v-model="isEditVisible">
-            <ticket-edit :ticket="selectedTicket">
-                <template v-slot:actions v-if="deptUsers.length">
-                    <v-select
-                        class="ml-auto"
-                        style="max-width:200px"
-                        :items="deptUsers"
-                        item-text="name"
-                        persistent-hint
-                        filled
-                        rounded
-                        dense
-                        hint="Assigned user"
-                        single-line
-                        item-value="id"
-                        v-model="assignedUser"
-                        @change="assignUserToTicket($event)"
-                    ></v-select>
-                    <v-select
-                        style="max-width:200px"
-                        :items="depts"
-                        item-text="name"
-                        persistent-hint
-                        filled
-                        rounded
-                        dense
-                        hint="Change ticket's department"
-                        single-line
-                        item-value="id"
-                        @change="changeTicketDept($event)"
-                        :value="selectedTicket.dept_id"
-                    ></v-select>
-                </template>
-            </ticket-edit>
-        </v-dialog>
-    </v-container>
+  <v-container>
+    <v-card-title>Department Tickets</v-card-title>
+    <ticket-list
+      :tickets="tickets"
+      :actionOne="viewTicket"
+      actionOneTitle="View"
+    ></ticket-list>
+    <v-dialog v-model="isEditVisible">
+      <ticket-edit :ticket="selectedTicket">
+        <template v-slot:actions v-if="deptUsers.length">
+          <supervisor-actions
+            :deptUsers="deptUsers"
+            :ticketDept="selectedTicket.dept_id"
+            :ticketId="selectedTicket.id"
+          ></supervisor-actions>
+        </template>
+      </ticket-edit>
+    </v-dialog>
+  </v-container>
 </template>
 <script>
 import { mapState, mapActions } from "vuex";
 import TicketEdit from "../components/TicketEdit.vue";
 import TicketList from "../components/TicketList.vue";
-import getDepts from "../mixins/getDepts";
+import SupervisorActions from "../components/SupervisorActions.vue";
 
 export default {
-    components: { TicketList, TicketEdit },
-    mixins: [getDepts],
-    name: "DeptTickets",
-    data() {
-        return {
-            tickets: [],
-            isEditVisible: false,
-            selectedTicket: {},
-            deptUsers: [],
-            assignedUser: null,
-            depts: []
-        };
+  components: { TicketList, TicketEdit, SupervisorActions },
+  name: "DeptTickets",
+  data() {
+    return {
+      tickets: [],
+      isEditVisible: false,
+      selectedTicket: {},
+      deptUsers: [],
+    };
+  },
+  computed: {
+    ...mapState({
+      userDept: (state) =>
+        state.authUser ? state.authUser.department_id : null,
+    }),
+  },
+  methods: {
+    ...mapActions(["getUserInfo"]),
+    async getDeptTickets() {
+      if (!this.userDept) {
+        await this.getUserInfo();
+      }
+      const { data } = await axios.get(`/api/depttickets/${this.userDept}`);
+      this.tickets = data;
     },
-    computed: {
-        ...mapState({
-            userDept: state =>
-                state.authUser ? state.authUser.department_id : null
-        })
+    async getDeptUsers() {
+      const { data } = await axios.get(`/api/departmentusers/${this.userDept}`);
+      this.deptUsers = data;
     },
-    methods: {
-        ...mapActions(["getUserInfo"]),
-        async getDeptTickets() {
-            if (!this.userDept) {
-                await this.getUserInfo();
-            }
-            const { data } = await axios.get(
-                `/api/depttickets/${this.userDept}`
-            );
-            this.tickets = data;
-        },
-        async getDeptUsers() {
-            const { data } = await axios.get(
-                `/api/departmentusers/${this.userDept}`
-            );
-            this.deptUsers = data;
-        },
-        viewTicket(id) {
-            this.selectedTicket = this.tickets.find(ticket => ticket.id === id);
-            this.isEditVisible = true;
-        },
-        async assignUserToTicket(assignedUser) {
-            await axios.patch(`/api/ticketupdate/${this.selectedTicket.id}`, {
-                assignees: JSON.stringify([assignedUser])
-            });
-        },
-        async changeTicketDept(dept_id) {
-            await axios.patch(`/api/ticketupdate/${this.selectedTicket.id}`, {
-                dept_id
-            });
-            setTimeout(async ()=>{
-                await this.getDeptTickets();
-            }, 2000);
-        }
+    viewTicket(id) {
+      this.selectedTicket = this.tickets.find((ticket) => ticket.id === id);
+      this.isEditVisible = true;
     },
-    async beforeMount() {
-        await this.getDeptTickets();
-        await this.getDeptUsers();
-        await this.getDepts();
-    }
+  },
+  async beforeMount() {
+    await this.getDeptTickets();
+    await this.getDeptUsers();
+  },
 };
 </script>
