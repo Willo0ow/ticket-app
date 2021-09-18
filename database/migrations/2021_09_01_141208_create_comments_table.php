@@ -18,7 +18,7 @@ class CreateCommentsTable extends Migration
             $table->string('content');
             $table->integer('user_id');
             $table->integer('ticket_id');
-            $table->integer('response_to');
+            $table->integer('response_to')->nullable();
             $table->timestamps();
             $table->index(['ticket_id', 'user_id']);
         });

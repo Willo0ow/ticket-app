@@ -6,6 +6,7 @@ use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\AssignmentRequestController;
+use App\Http\Controllers\CommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,3 +35,5 @@ Route::get('/ticket/{id}', [TicketController::class, 'show']);
 Route::get('/deptassignmentrequest/{id}', [AssignmentRequestController::class, 'getDeptRequests']);
 Route::patch('/assignmentrequest/{id}', [AssignmentRequestController::class, 'update']);
 Route::get('/usertickets/{user}', [TicketController::class, 'userTickets']);
+Route::get('/ticketcomments/{id}', [CommentController::class, 'ticketComments']);
+Route::post('/comment', [CommentController::class, 'store']);

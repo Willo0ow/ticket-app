@@ -35,7 +35,7 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return Comment::create($request->all());
     }
 
     /**
@@ -81,5 +81,8 @@ class CommentController extends Controller
     public function destroy(Comment $comment)
     {
         //
+    }
+    public function ticketComments($id){
+        return Comment::where('ticket_id', $id)->get();
     }
 }
