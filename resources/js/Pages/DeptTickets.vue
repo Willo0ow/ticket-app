@@ -7,13 +7,18 @@
       actionOneTitle="View"
     ></ticket-list>
     <v-dialog v-model="isEditVisible">
-      <ticket-edit :ticket="selectedTicket">
+      <ticket-edit :ticket="selectedTicket" :closeFunction="closeEditTicket">
         <template v-slot:actions v-if="deptUsers.length">
           <supervisor-actions
             :deptUsers="deptUsers"
             :ticketDept="selectedTicket.dept_id"
             :ticketId="selectedTicket.id"
           ></supervisor-actions>
+          <user-actions
+            :userDept="userDept"
+            :ticketId="selectedTicket.id"
+            :authUserId="authUser"
+          ></user-actions>
         </template>
       </ticket-edit>
     </v-dialog>
@@ -24,9 +29,10 @@ import { mapState, mapActions } from "vuex";
 import TicketEdit from "../components/TicketEdit.vue";
 import TicketList from "../components/TicketList.vue";
 import SupervisorActions from "../components/SupervisorActions.vue";
+import UserActions from "../components/UserActions.vue";
 
 export default {
-  components: { TicketList, TicketEdit, SupervisorActions },
+  components: { TicketList, TicketEdit, SupervisorActions, UserActions },
   name: "DeptTickets",
   data() {
     return {
@@ -40,6 +46,7 @@ export default {
     ...mapState({
       userDept: (state) =>
         state.authUser ? state.authUser.department_id : null,
+      authUser: (state) => (state.authUser ? state.authUser.id : null),
     }),
   },
   methods: {
@@ -58,6 +65,9 @@ export default {
     viewTicket(id) {
       this.selectedTicket = this.tickets.find((ticket) => ticket.id === id);
       this.isEditVisible = true;
+    },
+    closeEditTicket() {
+      this.isEditVisible = false;
     },
   },
   async beforeMount() {
