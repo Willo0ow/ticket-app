@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CommentController extends Controller
 {
@@ -35,7 +36,8 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
-        return Comment::create($request->all());
+        $newComment =  Comment::create($request->all());
+        return $this->show($newComment['id']);
     }
 
     /**
@@ -44,9 +46,13 @@ class CommentController extends Controller
      * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Http\Response
      */
-    public function show(Comment $comment)
+    public function show($id)
     {
-        //
+        return DB::table('comments')
+        ->join('users', 'comments.user_id', 'users.id')
+        ->select('comments.*', 'users.name as user_name')
+        ->where('comments.id', $id)
+        ->first();
     }
 
     /**
@@ -83,6 +89,10 @@ class CommentController extends Controller
         //
     }
     public function ticketComments($id){
-        return Comment::where('ticket_id', $id)->get();
+        return DB::table('comments')
+        ->join('users', 'comments.user_id', 'users.id')
+        ->select('comments.*', 'users.name as user_name')
+        ->where('comments.ticket_id', $id)
+        ->get();
     }
 }

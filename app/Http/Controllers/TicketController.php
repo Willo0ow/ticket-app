@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class TicketController extends Controller
 {
@@ -50,7 +51,12 @@ class TicketController extends Controller
      */
     public function show($id)
     {
-        return Ticket::where('id', $id)->first();
+        return DB::table('tickets')
+        ->join('users', 'tickets.user_id', 'users.id')
+        ->join('departments', 'tickets.dept_id', 'departments.id')
+        ->select('tickets.*', 'departments.name as department', 'users.name as user_name')
+        ->where('tickets.id', $id)
+        ->first();
     }
 
     /**
