@@ -11,6 +11,8 @@
   </v-list>
 </template>
 <script>
+import getDepts from "../mixins/getDepts";
+
 export default {
   name: "DepartmentList",
   props: {
@@ -30,8 +32,14 @@ export default {
       type: Array,
       required: true
     }
+},
+mixins: [getDepts],
+  data() {
+    return {
+      depts: [],
+    };
   },
-methods:{
+  methods: {
   getTitle(item){
     return this.titleDetails.reduce((title, detail)=>{
       return `${title} ${item[detail]}`

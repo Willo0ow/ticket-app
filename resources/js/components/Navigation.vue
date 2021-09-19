@@ -9,42 +9,42 @@
         </v-list-item-content>
       </v-list-item>
       <v-divider></v-divider>
-      <v-list-item  link to="/account">
+      <v-list-item link to="/account">
         <v-list-item-content>
           <v-list-item-title class="text-subtitle2">Account</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
-        <v-list-group
-          :value="false"
-          no-action
+      <v-list-group :value="false" no-action>
+        <template v-slot:activator>
+          <v-list-item-content>
+            <v-list-item-title>Settings</v-list-item-title>
+          </v-list-item-content>
+        </template>
+
+        <v-list-item
+          v-for="({ title, icon, path }, i) in settings"
+          :key="i"
+          link
+          :to="path"
+          dense
+          class="pl-5"
         >
-          <template v-slot:activator>
-            <v-list-item-content>
-              <v-list-item-title>Settings</v-list-item-title>
-            </v-list-item-content>
-          </template>
+          <v-list-item-title v-text="title"></v-list-item-title>
 
-          <v-list-item
-            v-for="({title, icon, path}, i) in settings"
-            :key="i"
-            link
-            :to="path"
-            dense
-            class="pl-5"
-          >
-            <v-list-item-title v-text="title"></v-list-item-title>
-
-            <v-list-item-icon>
-              <v-icon v-text="icon"></v-icon>
-            </v-list-item-icon>
-          </v-list-item>
-        </v-list-group>
-
-
+          <v-list-item-icon>
+            <v-icon v-text="icon"></v-icon>
+          </v-list-item-icon>
+        </v-list-item>
+      </v-list-group>
 
       <v-divider></v-divider>
-      <v-list-item v-for="tLink of ticketLinks" :key="tLink.text" link :to="tLink.link">
+      <v-list-item
+        v-for="tLink of ticketLinks"
+        :key="tLink.text"
+        link
+        :to="tLink.link"
+      >
         <v-list-item-content>
           <v-list-item-title class="text-subtitle2">{{
             tLink.text
@@ -52,9 +52,9 @@
         </v-list-item-content>
       </v-list-item>
       <v-divider></v-divider>
-      <v-list-item link to="/reports">
+      <v-list-item v-for="(add, idx) of adds" :key="`add-${idx}`" link :to="add.link">
         <v-list-item-content>
-          <v-list-item-title class="text-subtitle2">Reports</v-list-item-title>
+          <v-list-item-title class="text-subtitle2">{{add.title}}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
     </v-list>
@@ -74,6 +74,10 @@ export default {
         { text: "New Ticket", link: "/tickets/new" },
         { text: "My tickets", link: "/tickets/user" },
         { text: "Department Tickets", link: "/tickets/dept" },
+      ],
+      adds: [
+        { title: "Requests", link: "/requests", icon: "" },
+        { title: "Reports", link: "/reports", icon: "" },
       ],
     };
   },

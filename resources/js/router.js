@@ -10,6 +10,7 @@ import DeptTickets from "./Pages/DeptTickets.vue";
 import Reports from "./Pages/Reports.vue"
 import Departments from "./Pages/Departments.vue";
 import Users from "./Pages/Users.vue";
+import ManageRequests from "./Pages/ManageRequests.vue";
 
 
 Vue.use(VueRouter);
@@ -53,6 +54,10 @@ const routes = [
                 component: DeptTickets
             }
         ]
+    },
+    {
+        path: '/requests',
+        component: ManageRequests,
     },
     {
         path: '/reports',
