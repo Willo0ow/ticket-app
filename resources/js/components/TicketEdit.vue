@@ -10,6 +10,7 @@
       <slot name="actions"></slot>
       <v-btn @click="closeFunction">Close</v-btn>
     </v-card-actions>
+<slot name="comments"></slot>
   </v-card>
 </template>
 <script>

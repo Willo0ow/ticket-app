@@ -6,7 +6,6 @@
                 <v-text-field v-model="title" label="Title"></v-text-field>
                 <v-textarea v-model="content" label="Content"></v-textarea>
                 <div class="d-flex justify-space-between">
-
                 <v-menu
                     ref="menu"
                     v-model="menu"
