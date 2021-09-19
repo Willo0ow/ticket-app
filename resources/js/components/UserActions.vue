@@ -10,7 +10,13 @@
             <div>
               Why do you want the ticket to be assigned to You? (optional)
             </div>
-            <v-textarea v-model="message"></v-textarea>
+            <v-textarea
+              persistent-hint
+              filled
+              rounded
+              dense
+              v-model="message"
+            ></v-textarea>
             <v-btn @click="sendAssignmentRequest">Send</v-btn>
             <v-btn @click="cancel">Cancel</v-btn>
           </v-expansion-panel-content>
