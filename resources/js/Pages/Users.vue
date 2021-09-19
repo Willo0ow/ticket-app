@@ -2,7 +2,10 @@
   <div>
     <div>users</div>
     <v-list v-if="users.length" dense>
-      <v-list-item v-for="{ id, name, department, department_id } of users" :key="id">
+      <v-list-item
+        v-for="{ id, name, department, department_id } of users"
+        :key="id"
+      >
         <v-card width="100%" class="my-3">
           <v-card-title>{{ name }}</v-card-title>
           <v-card-subtitle>{{ department }}</v-card-subtitle>
@@ -12,7 +15,7 @@
               <v-icon color="red">{{ editIcon }}</v-icon>
             </v-btn>
             <v-select
-            v-if="selectedUser === id"
+              v-if="selectedUser === id"
               :value="department_id"
               :items="depts"
               item-value="id"
@@ -22,11 +25,9 @@
               rounded
               dense
               hint="Department"
-              @input="
-                updateUser({department_id: $event, user_id: id})
-              "
               single-line
               style="max-width: 200px"
+              @input="updateUser({ department_id: $event, user_id: id })"
             ></v-select>
           </v-card-actions>
         </v-card>
@@ -58,7 +59,7 @@ export default {
     editUser(id) {
       this.selectedUser = id;
     },
-    async updateUser({department_id, user_id}) {
+    async updateUser({ department_id, user_id }) {
       await axios.patch(`/api/users/${user_id}`, {
         department_id,
       });
