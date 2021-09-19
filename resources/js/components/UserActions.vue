@@ -1,17 +1,23 @@
 <template>
-  <v-expansion-panels v-model="panel">
-    <v-expansion-panel>
-      <v-expansion-panel-header
-        >Request the ticket to be assigned to you</v-expansion-panel-header
-      >
-      <v-expansion-panel-content>
-        <div>Why do you want the ticket to be assigned to You? (optional)</div>
-        <v-textarea v-model="message"></v-textarea>
-        <v-btn @click="sendAssignmentRequest">Send</v-btn>
-        <v-btn @click="cancel">Cancel</v-btn>
-      </v-expansion-panel-content>
-    </v-expansion-panel>
-  </v-expansion-panels>
+  <v-row>
+    <v-col cols="12">
+      <v-expansion-panels v-model="panel" flat tile popout inset>
+        <v-expansion-panel>
+          <v-expansion-panel-header
+            >Request the ticket to be assigned to you</v-expansion-panel-header
+          >
+          <v-expansion-panel-content>
+            <div>
+              Why do you want the ticket to be assigned to You? (optional)
+            </div>
+            <v-textarea v-model="message"></v-textarea>
+            <v-btn @click="sendAssignmentRequest">Send</v-btn>
+            <v-btn @click="cancel">Cancel</v-btn>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
+    </v-col>
+  </v-row>
 </template>
 <script>
 export default {

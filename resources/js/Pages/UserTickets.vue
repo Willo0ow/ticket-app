@@ -7,7 +7,13 @@
       actionOneTitle="View"
     ></ticket-list>
     <v-dialog v-model="isEditVisible">
-      <ticket-card v-if="selectedTicket" :ticketId="selectedTicket" :readonly="true" :closeFunction="closeTicket"></ticket-card>
+      <ticket-card
+        v-if="selectedTicket"
+        :ticketId="selectedTicket"
+        :readonly="true"
+        :closeFunction="closeTicket"
+        :userId="userId"
+      ></ticket-card>
     </v-dialog>
   </v-container>
 </template>

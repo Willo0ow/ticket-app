@@ -7,43 +7,42 @@
       actionOneTitle="View"
     ></ticket-list>
     <v-dialog v-model="isEditVisible">
-      <ticket-edit :ticket="selectedTicket" :closeFunction="closeEditTicket">
-        <template v-slot:actions v-if="deptUsers.length">
-          <supervisor-actions
-            :deptUsers="deptUsers"
-            :ticketDept="selectedTicket.dept_id"
-            :ticketId="selectedTicket.id"
-            :ticketPriority="selectedTicket.priority"
-            :ticketDeadline="selectedTicket.deadline"
-            :getTicket="viewTicket"
-            :ticketAssignees="selectedTicket.assignees"
-          ></supervisor-actions>
+      <ticket-card
+        v-if="selectedTicket"
+        :ticketId="selectedTicket"
+        :readonly="false"
+        :closeFunction="closeEditTicket"
+        :userId="authUser"
+      >
+        <template v-slot:userActions>
           <user-actions
             :userDept="userDept"
-            :ticketId="selectedTicket.id"
+            :ticketId="selectedTicket"
             :authUserId="authUser"
           ></user-actions>
         </template>
-      </ticket-edit>
+      </ticket-card>
     </v-dialog>
   </v-container>
 </template>
 <script>
 import { mapState, mapActions } from "vuex";
-import TicketEdit from "../components/TicketEdit.vue";
 import TicketList from "../components/TicketList.vue";
-import SupervisorActions from "../components/SupervisorActions.vue";
 import UserActions from "../components/UserActions.vue";
+import TicketCard from "../components/TicketCard.vue";
 
 export default {
-  components: { TicketList, TicketEdit, SupervisorActions, UserActions },
+  components: {
+    TicketList,
+    UserActions,
+    TicketCard,
+  },
   name: "DeptTickets",
   data() {
     return {
       tickets: [],
       isEditVisible: false,
       selectedTicket: {},
-      deptUsers: [],
     };
   },
   computed: {
@@ -62,25 +61,18 @@ export default {
       const { data } = await axios.get(`/api/depttickets/${this.userDept}`);
       this.tickets = data;
     },
-    async getDeptUsers() {
-      const { data } = await axios.get(`/api/departmentusers/${this.userDept}`);
-      this.deptUsers = data;
-    },
     async viewTicket(id) {
-      const {data} = await axios.get(`/api/ticket/${id}`)
-      data.assignees = await JSON.parse(data.assignees)
-      data.assignees = data.assignees?  data.assignees: [];
-      this.selectedTicket = data;
+      this.selectedTicket = id;
       this.isEditVisible = true;
     },
     async closeEditTicket() {
       this.isEditVisible = false;
+      this.selectedTicket = null;
       await this.getDeptTickets();
     },
   },
   async beforeMount() {
     await this.getDeptTickets();
-    await this.getDeptUsers();
   },
 };
 </script>
