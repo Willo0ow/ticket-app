@@ -39,6 +39,10 @@ export default {
       type: Function,
       required: true,
     },
+    users: {
+      type: Array,
+      required: true,
+    },
   },
   data() {
     return {
@@ -48,10 +52,6 @@ export default {
     };
   },
   methods: {
-    async getUsers() {
-      const { data } = await axios.get("/api/users");
-      this.users = data;
-    },
     async saveDepartment() {
       await axios.post("/api/department", {
         name: this.name,
@@ -65,9 +65,6 @@ export default {
       this.supervisor_id = "";
       this.close();
     },
-  },
-  async mounted() {
-    await this.getUsers();
   },
 };
 </script>

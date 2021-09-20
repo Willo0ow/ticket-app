@@ -29,6 +29,7 @@ Route::get('/departmentusers/{dept_id}', [UserController::class, 'departmentUser
 
 Route::post('/department', [DepartmentController::class, 'store']);
 Route::get('/departments', [DepartmentController::class, 'index']);
+Route::patch('/department/{id}', [DepartmentController::class, 'update']);
 
 Route::get('/depttickets/{dept_id}', [TicketController::class, 'deptTickets']);
 Route::patch('/ticketupdate/{ticket_id}', [TicketController::class, 'update']);

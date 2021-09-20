@@ -14,6 +14,19 @@
             <v-btn text small @click="editUser(id)">
               <v-icon color="red">{{ editIcon }}</v-icon>
             </v-btn>
+            <v-text-field
+              v-if="selectedUser === id"
+              :value="name"
+              required
+              single-line
+              style="max-width: 200px"
+              persistent-hint
+              filled
+              rounded
+              dense
+              hint="Name"
+              @change="updateUser({ value: $event, property: 'name' })"
+            ></v-text-field>
             <v-select
               v-if="selectedUser === id"
               :value="department_id"
@@ -27,7 +40,7 @@
               hint="Department"
               single-line
               style="max-width: 200px"
-              @input="updateUser({ department_id: $event, user_id: id })"
+              @input="updateUser({ value: $event, property: 'department_id' })"
             ></v-select>
           </v-card-actions>
         </v-card>
@@ -59,9 +72,9 @@ export default {
     editUser(id) {
       this.selectedUser = id;
     },
-    async updateUser({ department_id, user_id }) {
-      await axios.patch(`/api/users/${user_id}`, {
-        department_id,
+    async updateUser({ value, property }) {
+      await axios.patch(`/api/users/${this.selectedUser}`, {
+        [property]: value,
       });
       this.selectedUser = null;
       await this.getUsers();
