@@ -1,18 +1,18 @@
 
 <template>
   <v-list v-if="items.length" dense>
-    <v-list-item v-for="(item, index) of items" :key="index">
+    <v-list-item v-for="({name, supervisor_id, supervisor, id}, index) of items" :key="index">
       <v-card width="100%" class="my-3">
-        <v-card-title>{{ item.name }}</v-card-title>
-        <v-card-subtitle>{{ item.supervisor }}</v-card-subtitle>
+        <v-card-title>{{ name }}</v-card-title>
+        <v-card-subtitle>{{ supervisor }}</v-card-subtitle>
         <v-card-text></v-card-text>
         <v-card-actions>
-          <v-btn text small @click="editDept(item.id)">
+          <v-btn text small @click="editDept({name, supervisor_id, id})">
             <v-icon color="red">{{ editIcon }}</v-icon>
           </v-btn>
           <v-text-field
-            v-if="selectedItem === item.id"
-            :value="item.name"
+            v-if="selectedItem === id"
+            v-model="name_edit"
             required
             single-line
             style="max-width: 200px"
@@ -21,14 +21,13 @@
             rounded
             dense
             hint="Name"
-            @change="updateDeptProperty({ value: $event, property: 'name' })"
           ></v-text-field>
           <v-select
-            v-if="selectedItem === item.id"
+            v-if="selectedItem === id"
             :items="users"
             item-text="name"
             item-value="id"
-            :value="item.supervisor_id"
+            v-model="supervisor_id_edit"
             persistent-hint
             filled
             rounded
@@ -36,10 +35,10 @@
             hint="Choose the supervisor"
             single-line
             style="max-width: 200px"
-            @input="
-              updateDeptProperty({ value: $event, property: 'supervisor_id' })
-            "
           ></v-select>
+            <v-btn v-if="selectedItem === id" small text @click="updateDept">
+              <v-icon>{{saveIcon}}</v-icon>
+            </v-btn>
         </v-card-actions>
       </v-card>
     </v-list-item>
@@ -48,6 +47,7 @@
 <script>
 import getDepts from "../mixins/getDepts";
 import { mdiCircleEditOutline } from "@mdi/js";
+import { mdiContentSaveOutline } from "@mdi/js";
 
 export default {
   name: "DepartmentList",
@@ -69,20 +69,34 @@ export default {
   data() {
     return {
       editIcon: mdiCircleEditOutline,
+      saveIcon: mdiContentSaveOutline,
       depts: [],
       selectedItem: null,
+      name_edit: "",
+      supervisor_id_edit: null,
     };
   },
   methods: {
-    editDept(id) {
-      this.selectedItem = id;
+    editDept({supervisor_id, name, id}) {
+      if(this.selectedItem === id){
+        this.selectedItem = null;
+        this.name_edit = "";
+        this.supervisor_id_edit = null
+      }else {
+        this.selectedItem = id;
+        this.name_edit = name;
+        this.supervisor_id_edit = supervisor_id;
+      }
     },
-    async updateDeptProperty({ value, property }) {
+    async updateDept() {
       await axios.patch(`/api/department/${this.selectedItem}`, {
-        [property]: value,
+        name: this.name_edit,
+        supervisor_id: this.supervisor_id_edit,
       });
       await this.getItems();
-      this.selectedItem = null;
+        this.selectedItem = null;
+        this.name_edit = "";
+        this.supervisor_id_edit = null
     },
   },
 };
